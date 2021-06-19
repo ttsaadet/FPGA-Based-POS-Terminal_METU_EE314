@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-module vga(clk, HSync, VSync, Red, Green, Blue);
+module Project(clk, HSync, VSync, Red, Green, Blue);
 
 input clk;
 output HSync;
@@ -23,8 +23,8 @@ horizontal_counter v_vga(clk_25mhz, v_counter_trigger, v_counter);
 assign HSync = (H_counter < 96) ? 1'b1:1'b0;
 assign VSync = (V_counter < 2) ? 1'b1:1'b0;
 
-assign Red = (H_counter<784 && H_counter>143 && V_counter<515 &&  V_counter>34) ? 4'hF:4'h0;
-assign Green = (H_counter<784 && H_counter>143 && V_counter<515 &&  V_counter>34) ? 4'hF:4'h0;
-assign Blue = (H_counter<784 && H_counter>143 && V_counter<515 &&  V_counter>34) ? 4'hF:4'h0;
+assign Red = (H_counter < 784 && H_counter > 143 && V_counter < 515 &&  V_counter > 34) ? 4'hF:4'h0;
+assign Green = (H_counter < 784 && H_counter > 143 && V_counter < 515 &&  V_counter > 34) ? 4'hF:4'h0;
+assign Blue = (H_counter < 784 && H_counter > 143 && V_counter < 515 &&  V_counter > 34) ? 4'hF:4'h0;
 
 endmodule
