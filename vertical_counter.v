@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-
 module vertical_counter(clk_25mhz, v_counter_trigger, v_counter);
 
 input clk_25mhz;
