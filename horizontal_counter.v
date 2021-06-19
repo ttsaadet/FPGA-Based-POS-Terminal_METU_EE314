@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-
 module horizontal_counter(clk_25mhz, v_counter_trigger, h_counter);
 
 input clk_25mhz;
