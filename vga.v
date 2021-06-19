@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-module Project(clk, HSync, VSync, Red, Green, Blue);
+module vga(clk, HSync, VSync, Red, Green, Blue);
 
 input clk;
 output HSync;
