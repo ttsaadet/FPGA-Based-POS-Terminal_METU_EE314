@@ -17,8 +17,8 @@ always @(posedge clk)begin
   clk_25mhz <= ~clk_25mhz;
 end
 
-horizontal_counter h_vga(clk_25mhz, v_counter_trigger, h_counter);
-vertical_counter v_vga(clk_25mhz, v_counter_trigger, v_counter);
+horizontal_counter h_vga(clk_25mhz, v_counter_trigger, H_counter);
+vertical_counter v_vga(clk_25mhz, v_counter_trigger, V_counter);
 
 assign HSync = (H_counter < 96) ? 1'b1:1'b0;
 assign VSync = (V_counter < 2) ? 1'b1:1'b0;
