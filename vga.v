@@ -8,7 +8,7 @@ output [7:0] Red;
 output [7:0] Green;
 output [7:0] Blue;
 
-reg clk_25mhz;
+reg clk_25mhz = 0;
 wire v_counter_trigger;
 wire [15:0] H_counter;
 wire [15:0] V_counter;
