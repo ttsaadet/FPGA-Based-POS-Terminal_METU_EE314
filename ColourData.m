@@ -1,5 +1,6 @@
-%%matlab code that is used to obtain colour datas of images in .mif format
-ekranrgb = imread('image.png');
+%%matlab code that is used for to obtain colour datas of image in .mif
+%%format
+ekranrgb = imread('ekranyeni.png');
 counter_r=0;
 counter_g=0;
 counter_b=0;
@@ -19,7 +20,7 @@ fprintf(fid_r, 'BEGIN\n');
 
 for x = 1 : 1 :480  
 for y = 1 : 1: 640
-    fprintf(fid_r, ' %X : %x;\n',counter_r,ekranrgb(x,y,1));
+    fprintf(fid_r, ' %d : %x;\n',counter_r,ekranrgb(x,y,1));
     counter_r=counter_r+1;
 end
 end
@@ -38,7 +39,7 @@ fprintf(fid_g, 'BEGIN\n');
 
 for x = 1 : 1 :480  
 for y = 1 : 1: 640
-    fprintf(fid_g, ' %X : %x;\n',counter_g,ekranrgb(x,y,2));
+    fprintf(fid_g, ' %d : %x;\n',counter_g,ekranrgb(x,y,2));
     counter_g=counter_g+1;
 end
 end
@@ -57,10 +58,9 @@ fprintf(fid_b, 'BEGIN\n');
 
 for x = 1 : 1 :480  
 for y = 1 : 1: 640
-    fprintf(fid_b, ' %X : %x;\n',counter_b,ekranrgb(x,y,3));
+    fprintf(fid_b, ' %d : %x;\n',counter_b,ekranrgb(x,y,3));
     counter_b=counter_b+1;
 end
 end
  fprintf(fid_b,'END;\n'); %% end of output
  fclose(fid_b); %% closes the file
- 
