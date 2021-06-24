@@ -37,8 +37,8 @@ assign VSync = (V_counter > (480 + 9) && (V_counter < (480 + 10 + 1)));
 
 reg [2:0] barcode[4:0];
 reg sold_flag;
-reg [8:0] highligthPosX[11:0] = '{280,400,520,280,400,520,280,400,520,280,400,520};
-reg [8:0] highligthPosY[11:0] = '{5,5,5,125,125,125,245,245,245,365,365,365};
+reg [9:0] highligthPosX[0:11] = '{280,400,520,280,400,520,280,400,520,280,400,520};
+reg [9:0] highligthPosY[0:11] = '{5,5,5,125,125,125,245,245,245,365,365,365};
 /*buttonManager buttonsModuke(clk_25mhz,buttons, switches,barcode,sold_flag,
 	highligthPosX,highligthPosY);
 */
@@ -79,7 +79,7 @@ always @(posedge clk_25mhz) begin
 		else if(H_counter > menuStartPosX)begin //269: h_pixel number where menu starts
 			if(H_counter == menuStartPosX + 1) menu_column <= 0;
 			menuRomAdress <= (V_counter)*370+(H_counter-270);
-			if(pixelCounterX < 120)
+			/*if(pixelCounterX < 120)
 				pixelCounterX <= pixelCounterX +1; 
 			else begin 
 				pixelCounterX <= 0;
@@ -93,8 +93,17 @@ always @(posedge clk_25mhz) begin
 			end
 			if(menu_row == 4) menu_row <=0;
 			fruitIndex <= menu_row*3 + menu_column;
-			if(H_counter > highligthPosX[fruitIndex] && H_counter < highligthPosX[fruitIndex] + 20 
-				&& V_counter > highligthPosY[fruitIndex] && V_counter < highligthPosY[fruitIndex])begin
+			*/
+			if(H_counter > 280 && H_counter < 390 && V_counter > 5 && V_counter < 125)
+				fruitIndex <= 0;
+			else if (H_counter > 400 && H_counter < 520 && V_counter > 5 && V_counter < 125)
+				fruitIndex <= 1;
+			else if (H_counter > 520 && H_counter < 640 && V_counter > 5 && V_counter < 125)
+				fruitIndex <= 2;
+			/************** else if lerin devamı tüm meyve çerçeveleri için *////////
+				
+			if(H_counter > highligthPosX[fruitIndex] && H_counter < (highligthPosX[fruitIndex] + 20) 
+				&& V_counter > highligthPosY[fruitIndex] && V_counter < highligthPosY[fruitIndex] +20)begin
 				Red <= 0;
 				Green <= 0;
 				Blue <= 8'hff;
@@ -119,3 +128,19 @@ always @(posedge clk_25mhz) begin
 end
 
 endmodule
+/*
+if(H_counter > 280 && H_counter < 390 && V_counter > 5 && V_counter < 125)
+	fruitIndex <= 0;
+else if (H_counter > 400 && H_counter < 520 && V_counter > 5 && V_counter < 125)
+	fruitIndex <= 1;
+else if (H_counter > 520 && H_counter < 640 && V_counter > 5 && V_counter < 125)
+	fruitIndex <= 2;
+
+	
+if(H_counter > 280 && H_counter < 390 && V_counter > 125 && V_counter < 245)
+	fruitIndex <= 6;
+else if (H_counter > 400 && H_counter < 520 && V_counter > 125 && V_counter < 245)
+	fruitIndex <= 7;
+else if (H_counter > 520 && H_counter < 640 && V_counter > 125 && V_counter < 245)
+	fruitIndex <= 8;
+*/
