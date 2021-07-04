@@ -2,6 +2,7 @@
 module vga_mixed(
 input clk, 
 input [3:0] buttons,
+input sw_button,
 input [3:0] switches,
 output HSync,
 output VSync, 
@@ -49,16 +50,16 @@ reg [2:0] quantitylist[0:11];
 wire [3:0] highlightedRow;
 wire [3:0] shopping_list [0:11];
 wire [3:0] soldItemCount;
-wire [2:0] barcode[4:0];
-buttonManager buttonsModule(clk_25mhz, buttons, switches,soldItemCount,
+wire [2:0] barcode[0:4];
+buttonManager buttonsModule(clk_25mhz, buttons, switches,sw_button,soldItemCount,
 	highlightedRow,barcode,quantitylist,shopping_list, highligthPosX,highligthPosY);
 
 reg list_manager_active;
 reg [7:0] pixelValue_list;
 
 listManager listModule(clk_25mhz,H_counter,V_counter,soldItemCount,barcode,quantitylist, shopping_list,
- list_manager_active,pixelValue_list);
-reg [2:0] fruitIndex = 0;
+list_manager_active,pixelValue_list);
+reg [3:0] fruitIndex = 0;
 
 
 reg [18:0] romAddress_menu;
