@@ -37,9 +37,9 @@ reg [31:0] romAddressItemList;
 reg [31:0] romAddressNumber;
 reg [3:0] romValue_number;
 reg [3:0] romValueItemList;
-/*tableRomPort m1(romAddressItemList, clk, romValueItemList);
+tableRomPort m1(romAddressItemList, clk, romValueItemList);
 numbersRomPort m2(romAddressNumber, clk, romValue_number);
-*/
+
 reg [3:0] gridRow = 0; 
 reg [3:0] gridCollumn = 0; 
 gridCounter GC_Q1(clk,H_counter, V_counter, gridRow,gridCollumn);
@@ -60,7 +60,7 @@ always @(posedge clk)begin
 			if(H_counter < (numberX2-numberWidth) && V_counter >= tableRowPosY && V_counter < tableRowPosY + rowHeight)begin
 				//put item name here //shopping_list: satım sırasına göre idlerin tutulduğu array
 				if(shopping_list[gridRow] == 15) //15:blank item, not sold yet
-				pixelValue <= 8'hff;
+				pixelValue <= 8'hf0;
 				else begin
 				romAddressItemList <= (shopping_list[gridRow]+1)*tableWidth*rowHeight + (V_counter-tableRowPosY)*tableWidth + H_counter- tableX1 ;		
 				pixelValue <= (romValueItemList << 4);
@@ -71,9 +71,9 @@ always @(posedge clk)begin
 				pixelValue <= romValue_number<<4;
 			end
 			else 
-				pixelValue <= 8'hff;
+				pixelValue <= 8'hf0;
 		end
-		else pixelValue <= 8'hff;
+		else pixelValue <= 8'hf0;
 	end
 	else if(H_counter >= tableX1 && H_counter < tableX2 && V_counter >= tableY2  && V_counter < priceY1 )begin // put plus sign
 		enable <=1;		//14: plus sign location in png
@@ -87,20 +87,20 @@ always @(posedge clk)begin
 			romAddressNumber <= price_disp[gridCollumn-5]*numberWidth*numberHeight + (V_counter-priceY1)*numberWidth + H_counter-digitStartPosX;
 			pixelValue <= romValue_number << 4;
 		end
-		else pixelValue <= 8'hff; 
+		else pixelValue <= 8'hf0; 
 	end
 	else if(H_counter >= barcodeAreaX1 && H_counter <numberX2 && V_counter >= barcodeAreaY1 && V_counter < barcodeAreaY2 )begin//girilen barkodu ekranda gösterecek alan
 		enable <=1;	
-		if(gridCollumn >= 5 && gridCollumn < 9)begin //5-8: barcode girişi,9: quantity,10: quantity 
-			romAddressNumber <= barcode[gridCollumn - 5]*numberWidth * numberHeight + (V_counter - barcodeAreaY1)*numberWidth + H_counter -barcodeAreaX1;
+		if(gridCollumn >= 4 && gridCollumn < 8)begin //5-8: barcode girişi,9: quantity,10: quantity 
+			romAddressNumber <= barcode[gridCollumn - 4]*numberWidth * numberHeight + (V_counter - barcodeAreaY1)*numberWidth + H_counter - (gridCollumn*numberWidth + 26);
 			pixelValue <= romValue_number << 4;
 		end
-		else if(gridCollumn == 10)begin
-			romAddressNumber <= barcode[gridCollumn - 6]*numberWidth * numberHeight + (V_counter - barcodeAreaY1)*numberWidth + H_counter -barcodeAreaX1;
+		else if(gridCollumn == 9)begin
+			romAddressNumber <= barcode[gridCollumn - 5]*numberWidth * numberHeight + (V_counter - barcodeAreaY1)*numberWidth + H_counter - (gridCollumn*numberWidth + 26);
 			pixelValue <= romValue_number <<4;
 		end
 		else begin
-			pixelValue <= 8'hff;
+			pixelValue <= 8'hf0;
 		end
 	end 
 	else begin

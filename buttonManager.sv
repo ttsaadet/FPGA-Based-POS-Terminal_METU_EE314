@@ -3,7 +3,7 @@ module buttonManager(
 	input wire clk,
 	input wire [3:0] button_nonFitered,
 	input wire [3:0] switches,
-	input wire swButton_noFilter,
+	input wire [2:0] swButton_noFilter,
 	output reg [3:0] soldItemCount,             //kaç çeşit item satıldığının sayısı
 	output reg [3:0] h_rowIndex,//highlighted row in list navigation mode
 	output reg [2:0] barcode[0:4],	// first 4 digit barcode + last 1 digit quantity
@@ -43,7 +43,7 @@ initial begin
 	h_rowIndex = 0;
 end
 reg [3:0] buttons;
-reg sw_button;
+reg [2:0] sw_button;
 integer  counter;
 always @(posedge clk)begin
 	if(counter < 10) //change it according to desired frequncy 12499: 2khz
@@ -57,9 +57,22 @@ buttonFilter b1(clk_down,button_nonFitered[0],buttons[0]);
 buttonFilter b2(clk_down,button_nonFitered[1],buttons[1]);
 buttonFilter b3(clk_down,button_nonFitered[2],buttons[2]);
 buttonFilter b4(clk_down,button_nonFitered[3],buttons[3]);
-buttonFilter b5(clk_down, swButton_noFilter, sw_button);
+buttonFilter b5(clk_down, swButton_noFilter[0], sw_button[0]);
+buttonFilter b6(clk_down, swButton_noFilter[1], sw_button[1]);
+buttonFilter b7(clk_down, swButton_noFilter[2], sw_button[2]);
 
 always @(posedge clk_down)begin
+	if(sw_button[1]==1) begin //sw5-soft reset, barcode number only
+		barcode <='{0,0,0,0,0};
+		index <= 0;
+	end
+	if(sw_button[2] == 1) begin //sw6-hard reset, reset all shopping list
+		barcode <='{0,0,0,0,0};
+		index <= 0;
+		shopping_list[0:11] <=  '{15,15,15, 15,15,15, 15,15,15, 15,15,15}; 
+		quantitylist[0:11] <= '{0,0,0, 0,0,0, 0,0,0, 0,0,0};
+		soldItemCount <= 0;
+	end
 	case(switches)
 		4'b0000:begin  // all switches off, barcode entry mode active
 			if(index < 5)begin
@@ -105,7 +118,7 @@ always @(posedge clk_down)begin
 				
 			end
 			
-			else if(sw_button == 1 && index == 5) begin  // sold complete, reset all
+			else if(sw_button[0] == 1 && index == 5) begin  //sw4 on sold complete, reset all
 				soldItemCount <= soldItemCount + 1;
 				index <= 0;
 				quantity <= barcode[4];
@@ -124,12 +137,29 @@ always @(posedge clk_down)begin
 			end
 			else quantity <= 0;
 		end
-		4'b0010:begin //sw-2 active, navigation in shopping list active
+		4'b0010:begin //sw-1 active, navigation in shopping list active
 			if(buttons[3] == 1'b1 &&  h_rowIndex > 0) //up move
 				h_rowIndex <= h_rowIndex - 1'b1;
 			else if(buttons[2] == 1 && h_rowIndex < soldItemCount) // down move
-				h_rowIndex <= h_rowIndex  + 1'b1 ;
-			else if(sw_button == 1)begin  //delete item
+				h_rowIndex <= h_rowIndex + 1'b1 ;
+			else if(sw_button[0] == 1)begin  //delete item
+				quantitylist[shopping_list[h_rowIndex]] <= 0;
+				soldItemCount <= soldItemCount - 1;
+				for(reg[3:0] i = 0; i < 12; i = i +1)begin
+					if(i == 11)
+					shopping_list[i] <= 15; //15:blank
+					else if (i >= h_rowIndex)	
+					shopping_list[i] <= shopping_list[i + 1]; //aşağıdakileri bir yukarı kaydır
+				end
+			end
+			
+		end 
+		4'b0011:begin //sw-1 active, navigation in shopping list active dont care sw0
+			if(buttons[3] == 1'b1 &&  h_rowIndex > 0) //up move
+				h_rowIndex <= h_rowIndex - 1'b1;
+			else if(buttons[2] == 1 && h_rowIndex < soldItemCount) // down move
+				h_rowIndex <= h_rowIndex + 1'b1 ;
+			else if(sw_button[0] == 1)begin  //delete item
 				quantitylist[shopping_list[h_rowIndex]] <= 0;
 				soldItemCount <= soldItemCount - 1;
 				for(reg[3:0] i = 0; i < 12; i = i +1)begin
@@ -141,7 +171,7 @@ always @(posedge clk_down)begin
 			end
 			
 		end
-		4'b0100:begin //sw-3 active navigation between images active
+		4'b0001:begin //sw-0 active navigation between images active
 			quantity <=0;		
 			if(buttons[0] == 1'b1 &&  fruitIndex < 11) //right move
 				fruitIndex <= fruitIndex + 4'd1;
@@ -163,7 +193,7 @@ always @(posedge clk_down)begin
 				end
 			end
 		end		
-		4'b1100:begin // SW4 also active, input quanitty here
+		4'b1001:begin // SW3 also active, input quanitty here
 			case (buttons)
 				4'b0001: quantity <=1;
 				4'b0010: quantity <=2;

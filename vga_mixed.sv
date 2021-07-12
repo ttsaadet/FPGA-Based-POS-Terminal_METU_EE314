@@ -2,7 +2,7 @@
 module vga_mixed(
 input clk, 
 input [3:0] buttons,
-input sw_button,
+input [2:0] sw_button,
 input [3:0] switches,
 output HSync,
 output VSync, 
@@ -76,7 +76,7 @@ reg[18:0] romAddressItemList;
 
 reg [7:0] pixelValue_number;
 reg priceHandler_enable = 0;
-/*
+
 menu_redRom port1(romAddress_menu, clk_25mhz, R_romValue_menu); 
 menu_greenRom port2(romAddress_menu, clk_25mhz, G_romValue_menu);
 menu_blueRom port3(romAddress_menu, clk_25mhz, B_romValue_menu);
@@ -84,7 +84,7 @@ menu_blueRom port3(romAddress_menu, clk_25mhz, B_romValue_menu);
 logo_redRom port4(romAddress_logo, clk_25mhz, R_romValue_logo);
 logo_greenRom port5(romAddress_logo, clk_25mhz, G_romValue_logo);
 logo_blueRom port6(romAddress_logo, clk_25mhz, B_romValue_logo);
-*/
+
 
 always @(posedge clk_25mhz) begin
 	if(H_counter < 640 &&  V_counter < 480)begin// vga active area
@@ -147,9 +147,9 @@ always @(posedge clk_25mhz) begin
 			Blue <= 8'hff;
 		end
 		else begin //out of menu area and list area
-			Red <= 8'hff;
-			Green <= 8'hff;
-			Blue <= 8'hff;			
+			Red <= 8'hf0;
+			Green <= 8'hf0;
+			Blue <= 8'hf0;			
 		end	
 	end
 	else begin // out of active vga area
