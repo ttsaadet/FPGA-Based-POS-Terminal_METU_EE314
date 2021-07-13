@@ -11,7 +11,7 @@ module buttonManager(
 	output reg [3:0] shopping_list[0:11], //shopping listi oluşturmak için kronolojik alım listesi
 	output reg [9:0] highligthPosX[0:11], 
 	output reg [9:0] highligthPosY[0:11]
-);
+); 
 
 reg sold_flag;
 reg[2:0] index; //barcode digit index
